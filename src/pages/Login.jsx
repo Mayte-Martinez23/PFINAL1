@@ -103,11 +103,13 @@ const Login = () => {
       });
 
       if (response.ok) {
-        // Si tu backend devuelve un token, puedes extraerlo así:
-        // const result = await response.json();
-        // login(result.token);
-        login("dummy-token"); // Usa un token real si tu backend lo devuelve
-        navigate("/dashboard");
+        const result = await response.json();
+        if (result.token && result.doctor) {
+          login(result.token, result.doctor); // Pass doctor object
+          navigate("/dashboard");
+        } else {
+          setError("No se recibió un token o doctor del servidor.");
+        }
       } else {
         setError("Correo o contraseña incorrectos.");
       }

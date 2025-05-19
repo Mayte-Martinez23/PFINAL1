@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth } from "../auth/AuthContext";
 
 const Container = styled.div`
   padding: 1rem;
@@ -57,14 +58,18 @@ const DeleteButton = styled.button`
   }
 `;
 
-const mockPacientes = [
-  { id: 1, nombre: "Juan Pérez" },
-  { id: 2, nombre: "Ana García" },
-  { id: 3, nombre: "Luis Torres" },
-];
-
 const PatientList = () => {
-  const [pacientes, setPacientes] = useState(mockPacientes);
+  const [pacientes, setPacientes] = useState([]);
+  const { doctor } = useAuth();
+
+  useEffect(() => {
+    if (doctor?.id) {
+      fetch(`http://localhost:8080/doctor-pacientes/doctor/${doctor.id}/pacientes`)
+        .then(res => res.json())
+        .then(data => setPacientes(data))
+        .catch(() => setPacientes([]));
+    }
+  }, [doctor]);
 
   const eliminarPaciente = (id) => {
     if (window.confirm("¿Deseas eliminar este paciente?")) {
