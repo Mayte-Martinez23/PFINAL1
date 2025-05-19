@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import midoctorLogo from "../assets/midoctor.png";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -61,6 +62,12 @@ const Button = styled.button`
   }
 `;
 
+const Logo = styled.img`
+  height: 200px;
+  display: block;
+  margin: 0 auto auto;
+`;
+
 const Text = styled.p`
   text-align: center;
   font-size: 0.875rem;
@@ -112,6 +119,7 @@ const Login = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Logo src={midoctorLogo} alt="MiDoctor Logo" />
         <Title>Iniciar Sesión</Title>
         <Input {...register("email")} type="email" placeholder="Correo" required />
         <Input {...register("password")} type="password" placeholder="Contraseña" required />
