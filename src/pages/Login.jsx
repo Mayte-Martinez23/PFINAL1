@@ -2,6 +2,8 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { useState } from "react";
+import { useAuth } from "../auth/AuthContext";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -78,10 +80,33 @@ const Text = styled.p`
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const { login } = useAuth(); // <-- Usa el contexto aquí
 
-  const onSubmit = (data) => {
-    console.log("Login:", data);
-    navigate("/dashboard");
+  const onSubmit = async (data) => {
+    setError("");
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      if (response.ok) {
+        // Si tu backend devuelve un token, puedes extraerlo así:
+        // const result = await response.json();
+        // login(result.token);
+        login("dummy-token"); // Usa un token real si tu backend lo devuelve
+        navigate("/dashboard");
+      } else {
+        setError("Correo o contraseña incorrectos.");
+      }
+    } catch (err) {
+      setError("Error de conexión con el servidor.");
+    }
   };
 
   return (
@@ -91,6 +116,7 @@ const Login = () => {
         <Input {...register("email")} type="email" placeholder="Correo" required />
         <Input {...register("password")} type="password" placeholder="Contraseña" required />
         <Button type="submit">Entrar</Button>
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
         <Text>
           ¿No tienes cuenta? <a href="/register">Regístrate</a>
         </Text>
