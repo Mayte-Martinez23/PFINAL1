@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import midoctorLogo from "../assets/midoctor.png"; // Adjust the path if necessary
 
 const Nav = styled.nav`
   background-color: #1e3a8a; /* azul oscuro */
@@ -9,6 +10,11 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 3px 8px rgba(30, 58, 138, 0.4);
+`;
+
+const Logo = styled.img`
+  height: 50px; /* Adjust size as needed */
+  margin-right: 1rem;
 `;
 
 const Title = styled.h1`
@@ -37,7 +43,10 @@ const StyledLink = styled(Link)`
 const Navbar = () => {
   return (
     <Nav>
-      <Title>Control de Citas</Title>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Logo src={midoctorLogo} alt="MiDoctor Logo" />
+        <Title>Control de Citas</Title>
+      </div>
       <NavLinks>
         <StyledLink to="/dashboard">Inicio</StyledLink>
         <StyledLink to="/register">Registrar Médico</StyledLink>
