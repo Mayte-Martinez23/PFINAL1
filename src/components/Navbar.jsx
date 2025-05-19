@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import midoctorLogo from "../assets/midoctor.png"; // Adjust the path if necessary
+import midoctorLogo from "../assets/midoctor.png";
+import { useAuth } from "../auth/AuthContext";
 
 const Nav = styled.nav`
   background-color: #1e3a8a; /* azul oscuro */
@@ -41,6 +42,15 @@ const StyledLink = styled(Link)`
 `;
 
 const Navbar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    navigate("/");
+  };
+
   return (
     <Nav>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -50,7 +60,7 @@ const Navbar = () => {
       <NavLinks>
         <StyledLink to="/dashboard">Inicio</StyledLink>
         <StyledLink to="/register">Registrar Médico</StyledLink>
-        <StyledLink to="/">Cerrar sesión</StyledLink>
+        <StyledLink to="/" onClick={handleLogout}>Cerrar sesión</StyledLink>
       </NavLinks>
     </Nav>
   );
