@@ -5,9 +5,9 @@ import { useAuth } from "../auth/AuthContext";
 
 const Container = styled.div`
   padding: 1rem;
-  border: 1px solid #e2e8f0;
+  /*border: 1px solid #e2e8f0;*/
   border-radius: 12px;
-  background-color: white;
+  /*background-color: white;*/
 `;
 
 const Title = styled.h2`
