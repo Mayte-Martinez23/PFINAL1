@@ -71,11 +71,22 @@ const PatientList = () => {
     }
   }, [doctor]);
 
-  const eliminarPaciente = (id) => {
-    if (window.confirm("¿Deseas eliminar este paciente?")) {
-      setPacientes(pacientes.filter((p) => p.id !== id));
+  const eliminarPaciente = async (id) => {
+  if (window.confirm("¿Deseas eliminar este paciente?")) {
+    try {
+      const response = await fetch(`http://localhost:8080/pacientes/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setPacientes(pacientes.filter((p) => p.id !== id));
+      } else {
+        alert("No se pudo eliminar el paciente.");
+      }
+    } catch (err) {
+      alert("Error de conexión con el servidor.");
     }
-  };
+  }
+};
 
   return (
     <Container>

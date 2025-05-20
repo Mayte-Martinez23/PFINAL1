@@ -1,5 +1,5 @@
 /* src/index.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 /* Estilo base para títulos */
 h1, h2, h3 {
   font-family: 'Segoe UI', sans-serif;
@@ -46,8 +46,6 @@ input:focus, textarea:focus {
 nav {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body {
   font-family: 'Inter', sans-serif;
