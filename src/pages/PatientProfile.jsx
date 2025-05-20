@@ -1,21 +1,44 @@
-// src/pages/PatientProfile.jsx
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
 const PatientProfile = () => {
   const { id } = useParams();
+  const [historiales, setHistoriales] = useState([]);
+  const [paciente, setPaciente] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Aquí debes reemplazar con datos reales del backend
-  const paciente = {
-    id,
-    nombre: "Juan Pérez",
-    email: "juan@example.com",
-    historial: "Alergia a penicilina. Diagnóstico: hipertensión.",
-    citas: [
-      { fecha: "2025-05-20", hora: "10:00", motivo: "Chequeo general" },
-      { fecha: "2025-06-15", hora: "09:30", motivo: "Revisión presión arterial" },
-    ],
-  };
+  useEffect(() => {
+    setLoading(true);
+    fetch(`http://localhost:8080/historiales/paciente/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setHistoriales(data);
+        if (data.length > 0) {
+          setPaciente(data[0].paciente);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div>
+        <Navbar />
+        <div className="p-6 max-w-3xl mx-auto">Cargando...</div>
+      </div>
+    );
+  }
+
+  if (!paciente) {
+    return (
+      <div>
+        <Navbar />
+        <div className="p-6 max-w-3xl mx-auto">No se encontró información del paciente.</div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -23,17 +46,26 @@ const PatientProfile = () => {
       <div className="p-6 max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Perfil de {paciente.nombre}</h1>
         <p><strong>Correo:</strong> {paciente.email}</p>
-        <p><strong>Historial médico:</strong></p>
-        <p className="mb-4 bg-gray-100 p-3 rounded">{paciente.historial}</p>
+        <p><strong>Dirección:</strong> {paciente.direccion}</p>
+        <p><strong>Teléfono:</strong> {paciente.telefono}</p>
+        <p><strong>RFC:</strong> {paciente.rfc}</p>
 
-        <h2 className="text-xl font-semibold mb-2">Historial de citas</h2>
-        <ul className="space-y-2">
-          {paciente.citas.map((cita, index) => (
-            <li key={index} className="bg-white p-3 shadow rounded">
-              <strong>{cita.fecha}</strong> a las <strong>{cita.hora}</strong> — {cita.motivo}
-            </li>
-          ))}
-        </ul>
+        <h2 className="text-xl font-semibold mb-2 mt-6">Historial médico</h2>
+        {historiales.length === 0 ? (
+          <p>No hay historiales para este paciente.</p>
+        ) : (
+          <ul className="space-y-4">
+            {historiales.map(historial => (
+              <li key={historial.id} className="bg-white p-3 shadow rounded">
+                <strong>{historial.titulo}</strong>
+                <div className="text-sm text-gray-600 mb-1">
+                  Fecha: {new Date(historial.fechaCreado).toLocaleDateString()}
+                </div>
+                <div>{historial.descripcion}</div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
