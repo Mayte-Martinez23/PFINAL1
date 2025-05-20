@@ -1,6 +1,6 @@
-
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { useAuth } from "../auth/AuthContext"; // Import useAuth
 
 const Container = styled.div`
   padding: 1rem;
@@ -54,11 +54,30 @@ const Button = styled.button`
 
 const PatientForm = () => {
   const { register, handleSubmit, reset } = useForm();
+  const { doctor } = useAuth(); // Get doctor from context
 
-  const onSubmit = (data) => {
-    console.log("Paciente creado:", data);
-    alert("Paciente creado correctamente");
-    reset();
+  const onSubmit = async (data) => {
+    if (!doctor?.id) {
+      alert("No se encontró el doctor. Por favor, inicia sesión nuevamente.");
+      return;
+    }
+    // Add doctorId to the data
+    const payload = { ...data, doctorId: doctor.id };
+    try {
+      const response = await fetch("http://localhost:8080/pacientes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        alert("Paciente creado correctamente");
+        reset();
+      } else {
+        alert("Error al crear el paciente");
+      }
+    } catch (err) {
+      alert("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -67,7 +86,11 @@ const PatientForm = () => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Input {...register("nombre")} placeholder="Nombre completo" required />
         <Input {...register("email")} type="email" placeholder="Correo electrónico" required />
-        <Input {...register("telefono")} placeholder="Teléfono" />
+        <Input {...register("password")} type="password" placeholder="Contraseña" required />
+        <Input {...register("telefono")} placeholder="Teléfono" required />
+        <Input {...register("rfc")} placeholder="RFC" required />
+        <Input {...register("direccion")} placeholder="Dirección" required />
+        {/* doctorId is not shown to the user, but sent in the payload */}
         <Button type="submit">Agregar</Button>
       </Form>
     </Container>
